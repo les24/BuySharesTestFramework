@@ -1,0 +1,1 @@
+{"uuid":"7952dbb1-de58-4b92-b8d0-db7bbcbec648","name":"BuySharesTestFramework","children":["b0ca2542-b9dd-4286-b265-914fa1e63986"],"befores":[{"name":"Setting up Test","status":"passed","stage":"finished","description":"Setting up Test","steps":[],"attachments":[],"parameters":[],"start":1641834745534,"stop":1641834745535}],"afters":[],"start":1641834745532,"stop":1641834770811}

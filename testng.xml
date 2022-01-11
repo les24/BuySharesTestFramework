@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Automation Test Suite">
+
+    <listeners>
+        <listener class-name="Listeners.TestListener"/>
+    </listeners>
+
+    <test verbose="2" name="TestsCases">
+        <classes>
+            <class name="RefreshTest"/>
+            <class name="VerifyProviderTest"/>
+        </classes>
+    </test>
+</suite>
