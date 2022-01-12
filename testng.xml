@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Automation Test Suite">
+<suite name="Automation Test Suite"  parallel="tests" thread-count="1">
 
     <listeners>
         <listener class-name="Listeners.TestListener"/>
     </listeners>
 
-    <test verbose="2" name="TestsCases">
+    <test verbose="2" name="Test Cases">
         <classes>
             <class name="RefreshTest"/>
-            <class name="VerifyProviderTest"/>
+            <class name="ProviderTest"/>
+            <class name="FiltersTest"/>
         </classes>
     </test>
 </suite>

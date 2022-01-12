@@ -4,12 +4,11 @@ import ExtentReporters.ExtentFactory;
 import ExtentReporters.ExtentReporter;
 import com.aventstack.extentreports.*;
 import org.apache.log4j.Logger;
-import org.openqa.selenium.WebDriver;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import com.aventstack.extentreports.MediaEntityBuilder;
-import utils.TabUtilities;
+import utils.Common;
 
 
 public class TestListener implements ITestListener {
@@ -22,7 +21,7 @@ public class TestListener implements ITestListener {
     @Override
     public void onTestFailure(ITestResult result) {
         logger.error("============================ Error "+ result.getName() + " test has failed ============================");
-        String screenshotPath = TabUtilities.captureScreenshot(result);
+        String screenshotPath = Common.captureScreenshot(result);
         ExtentFactory.getTest().fail("============================ Error "+ result.getName() +" test has failed ============================",
                  MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build());
         ExtentFactory.getTest().log(Status.FAIL, result.getThrowable().toString());
@@ -51,15 +50,15 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onFinish(ITestContext context) {
-        logger.info(context.getName()+" Finished! ");
-        ExtentFactory.getTest().log(Status.INFO, context.getName() + "Test Run Finished!");
+        logger.info(context.getName() +" Finished! ");
+        ExtentFactory.getTest().log(Status.INFO, context.getName() + " Test Run Finished!");
         report.flush();
     }
 
     @Override
     public void onTestSuccess(ITestResult result) {
         logger.info(result.getMethod().getMethodName()+" Test Success! ");
-        ExtentFactory.getTest().log(Status.PASS, "Test passed!");
+        ExtentFactory.getTest().log(Status.PASS, result.getMethod().getMethodName() + " Test passed!");
     }
 
     @Override

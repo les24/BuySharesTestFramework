@@ -13,21 +13,40 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
-import java.util.Set;
 
-public class TabUtilities {
+public class Common {
     private WebDriver driver;
     private JavascriptExecutor js;
-    private String defaultTab;
     private final static long TIMEOUT = 2000;
 
-    static Logger logger = Logger.getLogger(TabUtilities.class);
+    static Logger logger = Logger.getLogger(Common.class);
 
 
-    public TabUtilities(WebDriver driver) {
+    public Common(WebDriver driver) {
         this.driver = driver;
         initComponents();
     }
+
+    /**
+     * To set implicit wait timeout for 'N' Seconds on 'driver'
+     * @param driver
+     * @param N
+     */
+    public static void setImplicitTimeout(WebDriver driver, int N) {
+        logger.info("Setting Implicit timeout of " + N + " Seconds.");
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+    }
+
+    /**
+     * To set page load timeout for 'N' Seconds on 'driver'
+     * @param driver
+     * @param N
+     */
+    public static void setPageLoadTimeout(WebDriver driver, int N) {
+        logger.info("Setting Implicit timeout of " + N + " Seconds.");
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(10));
+    }
+
 
     public void waitForPageLoad(WebDriver driver, int timeWait) throws JavascriptException {
         js = ((JavascriptExecutor) driver);
@@ -39,41 +58,6 @@ public class TabUtilities {
         js = (JavascriptExecutor) driver;
     }
 
-    private void newTab() throws InterruptedException {
-        openNewTab();
-    }
-
-    public void closeTab() {
-        driver.close();
-    }
-
-    public void switchToNewTab() throws InterruptedException {
-        //newTab();
-        Thread.sleep(TIMEOUT);
-        waitForPageLoad(driver, 8000);
-        Set<String> windowHandles = driver.getWindowHandles();
-        defaultTab = (String) windowHandles.toArray()[0];
-        driver.switchTo().window((String) windowHandles.toArray()[1]);
-    }
-
-    public void returnToDefaultTab() throws InterruptedException {
-        //Tab will be closed automatically in project aeon
-        //closeTab();
-        driver.switchTo().window(defaultTab);
-        Thread.sleep(TIMEOUT);
-    }
-
-    public void openNewTab() throws InterruptedException {
-        js.executeScript("window.open()");
-        Thread.sleep(TIMEOUT);
-    }
-
-    public void switchToTab(int tabIndex) throws InterruptedException {
-        Thread.sleep(TIMEOUT);
-        Set<String> windowHandles = driver.getWindowHandles();
-        defaultTab = (String) windowHandles.toArray()[0];
-        driver.switchTo().window((String) windowHandles.toArray()[tabIndex]);
-    }
 
     /**
      * To set implicit wait timeout for 'N' Seconds on 'driver'
@@ -81,7 +65,7 @@ public class TabUtilities {
      * @param element
      */
     public static void getElementInToView(WebDriver driver, WebElement element) {
-        //logger.info("Get Element in to Page view visible.");
+        logger.info("Get Element into Page view visible.");
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
         ((JavascriptExecutor) driver).executeScript("javascript:window.scrollBy(0,-300)");
     }
@@ -103,7 +87,7 @@ public class TabUtilities {
         WebDriver driver = (WebDriver)context.getAttribute("WebDriver");
 
         File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-        String timestamp = TabUtilities.getCurrentTimeStamp();
+        String timestamp = Common.getCurrentTimeStamp();
         String path = System.getProperty("user.dir") + "\\screenshots\\"+ result.getName() + timestamp+".png";
 
         try {

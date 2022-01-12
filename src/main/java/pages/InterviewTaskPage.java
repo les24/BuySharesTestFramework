@@ -1,7 +1,6 @@
 package pages;
 
 import ExtentReporters.ExtentFactory;
-import com.aventstack.extentreports.ExtentTest;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
@@ -11,8 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.asserts.SoftAssert;
-import utils.TabUtilities;
-
+import utils.Common;
 import com.aventstack.extentreports.Status;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -31,8 +29,8 @@ public class InterviewTaskPage {
     public InterviewTaskPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        //Commons.setImplicitTimeout(driver, 5);
-        //Commons.setPageLoadTimeout(driver,20);
+        Common.setImplicitTimeout(driver, 5);
+        Common.setPageLoadTimeout(driver,20);
         wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
@@ -62,17 +60,23 @@ public class InterviewTaskPage {
 
     /**
      * Set Amount
-     *
      * @param amount
      */
     public void setAmount(float amount) {
+        logger.info("Setting amount.");
+        ExtentFactory.getTest().info("Setting amount.");
         txtInvestAmount.clear();
         txtInvestAmount.sendKeys(Float.toString(amount));
         wait.until(ExpectedConditions.attributeToBe(txtInvestAmount, "value", Float.toString(amount)));
     }
 
+    /**
+     * Select crypto currency
+     * @param cryptoCurrency
+     */
     public void selectCryptoCurrency(String cryptoCurrency) {
         logger.info("Selecting Crypto Currency.");
+        ExtentFactory.getTest().info("Selecting Crypto Currency.");
         wait.until(ExpectedConditions.elementToBeClickable(cryptoCurrencyControl));
         WebElement crypto;
         cryptoCurrencyControl.click();
@@ -90,6 +94,7 @@ public class InterviewTaskPage {
      */
     public void clickRefreshButton() {
         logger.info("Clicking Refresh button.");
+        ExtentFactory.getTest().info("Clicking Refresh button.");
         wait.until(ExpectedConditions.elementToBeClickable(btnRefresh));
         btnRefresh.click();
         new WebDriverWait(driver, Duration.ofSeconds(5000)).until(
@@ -102,6 +107,7 @@ public class InterviewTaskPage {
      */
     public void clickMoreFiltersButton() {
         logger.info("Clicking More Filters button.");
+        ExtentFactory.getTest().info("Clicking More Filters button.");
         wait.until(ExpectedConditions.elementToBeClickable(buttonMoreFilters));
         buttonMoreFilters.click();
 
@@ -112,9 +118,14 @@ public class InterviewTaskPage {
         }
     }
 
+    /**
+     * Select pamyment Method
+     * @param paymentMethodName
+     */
     public void selectPaymentMethods(String paymentMethodName) {
+        logger.info("Select Payment Method " + paymentMethodName + " in Filters ");
+        ExtentFactory.getTest().info("Select Payment Method " + paymentMethodName + " in Filters ");
 
-        logger.info("Select Payment Method in Filters");
         WebElement chkPaymentMethod = providerBase.findElement(By.xpath("//input[@name='paymentMethods' and @value='" + paymentMethodName + "']/parent::div"));
         wait.until(ExpectedConditions.elementToBeClickable(chkPaymentMethod));
         if (!chkPaymentMethod.isSelected()) {
@@ -122,12 +133,15 @@ public class InterviewTaskPage {
         }
     }
 
+    /**
+     * CLick Load More Button
+     */
     public void clickLoadMoreButton() {
-
         logger.info("Clicking on Load More button");
+
         try {
             wait.until(ExpectedConditions.elementToBeClickable(buttonLoadMore));
-            TabUtilities.getElementInToView(driver, buttonLoadMore);
+            Common.getElementInToView(driver, buttonLoadMore);
             buttonLoadMore.click();
         } catch (Exception e) {
             logger.info(e.toString());
@@ -139,8 +153,9 @@ public class InterviewTaskPage {
      * Verify that Providers URLs(Visit Now) are not broken
      */
     public void verifyProvidersURLNotBroken() {
-
         logger.info("Verifying that Providers URLs(Visit Now) are not broken");
+        ExtentFactory.getTest().info("Verifying that Providers URLs(Visit Now) are not broken");
+
         SoftAssert softAssert = new SoftAssert();
 
         List<WebElement> allProviders = providerBase.findElements(By.xpath(".//a[text()='visit now']"));
@@ -150,7 +165,7 @@ public class InterviewTaskPage {
         for (WebElement provider : allProviders) {
 
             String providerURL = null;
-            TabUtilities.getElementInToView(driver, provider);
+            Common.getElementInToView(driver, provider);
             provider.click();
             Set<String> windowHandles = driver.getWindowHandles();
 
@@ -173,12 +188,9 @@ public class InterviewTaskPage {
      * @param providerURL
      */
     public SoftAssert verifyURLAccessibility(String providerURL, SoftAssert softAssert){
-
-
-
-
-
         logger.info("Verifying URL not broken");
+        ExtentFactory.getTest().info("Verifying URL not broken");
+
         try {
             HttpURLConnection huc;
             int respCode;
@@ -195,7 +207,7 @@ public class InterviewTaskPage {
             if(respCode == 403){
                 logger.info(providerURL+"Link is working but there is some authorization issue.");
                 softAssert.fail("Link is working but there is some authorization issue." + providerURL);
-                ExtentFactory.getTest().log(Status.PASS, ("Link is working but there is some authorization issue." + providerURL));
+                ExtentFactory.getTest().log(Status.FAIL, ("Link is working but there is some authorization issue." + providerURL));
             }
             else if(respCode >= 400){
                 logger.info(providerURL+" is a broken link");
@@ -227,8 +239,9 @@ public class InterviewTaskPage {
      * Verify Provider Reviews buttons
      */
     public void verifyProviderSiteReviews() {
+        logger.info("Verify Provider Review Buttons");
+        ExtentFactory.getTest().info("Verify Provider Review Buttons");
 
-        logger.info("Verifying Provider Reviews buttons");
         List<WebElement> allProviders = providerBase.findElements(By.xpath(".//a[text()='visit now']/parent::div/following-sibling::div/a[text()='review']"));
         wait.until(ExpectedConditions.visibilityOfAllElements(allProviders));
         String baseHandle = driver.getWindowHandle();
@@ -236,7 +249,7 @@ public class InterviewTaskPage {
         for(WebElement provider : allProviders){
 
             String providerReviewsURL= provider.getAttribute("href");
-            TabUtilities.getElementInToView(driver, provider);
+            Common.getElementInToView(driver, provider);
             provider.click();
 
             Set<String> windowHandles = driver.getWindowHandles();
@@ -244,6 +257,8 @@ public class InterviewTaskPage {
                 if(!handle.equalsIgnoreCase(baseHandle)){
                     driver.switchTo().window(handle);
                     Assert.assertTrue(driver.getCurrentUrl().equalsIgnoreCase(providerReviewsURL));
+                    logger.info("Provider review site link is vald");;
+                    ExtentFactory.getTest().log(Status.PASS, driver.getCurrentUrl() + " review site link is valid");
                     driver.close();
                     driver.switchTo().window(baseHandle);
                 }
@@ -255,7 +270,9 @@ public class InterviewTaskPage {
      * Verify Providers Visit Now buttons
      */
     public void verifyProviderSiteVisits() {
-        //logger.info("Verifying Providers Visit Now buttons");
+        logger.info("Verifying Providers Visit Now buttons");
+        ExtentFactory.getTest().info("Verifying Providers Visit Now buttons");
+
         List<WebElement> allProviders = providerBase.findElements(By.xpath(".//a[text()='visit now']"));
         wait.until(ExpectedConditions.visibilityOfAllElements(allProviders));
 
@@ -265,13 +282,15 @@ public class InterviewTaskPage {
             String[] arr = provider.getAttribute("href").split("/");
             String providerName = arr[arr.length-1];
 
-            TabUtilities.getElementInToView(driver,provider);
+            Common.getElementInToView(driver,provider);
             provider.click();
             Set<String> windowHandles = driver.getWindowHandles();
             for(String handle:windowHandles){
                 if(!handle.equalsIgnoreCase(baseHandle)){
                     driver.switchTo().window(handle);
                     Assert.assertTrue(driver.getCurrentUrl().contains(providerName));
+                    logger.info("Visit now button for " + providerName + " is working");;
+                    ExtentFactory.getTest().log(Status.PASS, "Visit now button for " + providerName + " is valid");
                     driver.close();
                     driver.switchTo().window(baseHandle);
                 }
@@ -283,8 +302,9 @@ public class InterviewTaskPage {
      * Verify Clear Filter Functionality
      */
     public void verifyFiltersCleared() {
+        logger.info("Verifying Clear Filter Functionality");
+        ExtentFactory.getTest().info("Verifying Clear Filter Functionality");
 
-        //logger.info("Verifying Clear Filter Functionality");
         List<WebElement> chkPaymentMethods =moreFiltersActions.findElements(By.xpath(".//input[@name='paymentMethods']"));
         List<WebElement> chkFeatures= moreFiltersActions.findElements(By.xpath(".//input[@name='functions']"));
         List<WebElement> chkUsability= moreFiltersActions.findElements(By.xpath(".//input[@name='easeOfUse']"));
@@ -312,15 +332,19 @@ public class InterviewTaskPage {
         Assert.assertEquals(inputSafety.getAttribute("value"), "1", "FAILED | Safety not cleared");
         Assert.assertEquals(inputCoinSelection.getAttribute("value"), "1", "FAILED | Coin Selection not cleared");
         Assert.assertEquals(inputRating.getAttribute("value"), "1", "FAILED | Rating not cleared");
+        logger.info("All filters are cleared!");
+        ExtentFactory.getTest().log(Status.PASS, "All Filters are cleared! ");
     }
+
     /**
      * click on Clear Filter button
      */
     public void clickClearFilterButton(){
-
         logger.info("Clicking on Clear Filter button");
+        ExtentFactory.getTest().info("Clicking on Clear Filter button");
+
         wait.until(ExpectedConditions.elementToBeClickable(buttonClearFilter));
-        TabUtilities.getElementInToView(driver,buttonClearFilter);
+        Common.getElementInToView(driver,buttonClearFilter);
         Actions actions = new Actions(driver);
         actions.moveToElement(buttonClearFilter).click().build().perform();
         //buttonClearFilter.click();
@@ -331,8 +355,9 @@ public class InterviewTaskPage {
      * @param paymentMethodName
      */
     public void verifyProviderPaymentMethod(String paymentMethodName) {
+        logger.info("Verifying Providers Payment Method");
+        ExtentFactory.getTest().info("Verifying Providers Payment Method");
 
-       // logger.info("Verifying Providers Payment Method");
         List<WebElement> allProviders = providerBase.findElements(By.xpath("div[3]/div"));
         wait.until(ExpectedConditions.visibilityOfAllElements(allProviders));
 
@@ -349,6 +374,7 @@ public class InterviewTaskPage {
                 }
             }
             Assert.assertTrue(paymentMethodFound, "FAILED | Payment Method Not Found for Provider Number" + counter+1);
+            ExtentFactory.getTest().log(Status.PASS, "Payment Method Found");
         }
     }
 
@@ -358,8 +384,9 @@ public class InterviewTaskPage {
      * @param cryptoCurrency
      */
     public void verifyProviderAmountAndCurrency(int amount, String cryptoCurrency){
+        logger.info("Verifying Providers amount and Currency");
+        ExtentFactory.getTest().info("Verifying Providers amount and Currency");
 
-        //logger.info("Verifying Providers amount and Currency");
         new WebDriverWait(driver, 5000).until(
                 webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
 
@@ -371,13 +398,16 @@ public class InterviewTaskPage {
         String actualCurrency;
 
         for(WebElement provider : allProviders){
-
             actualCurrency = provider.findElements(By.xpath(".//span[text() = '"+cryptoCurrency+"']")).get(1).getText();
             actualAmount = provider.findElements(By.xpath(".//div[contains(text(), '"+ amount +"')]")).get(1).getText();
 
             System.out.println(actualAmount + "" + actualCurrency);
             Assert.assertTrue(actualAmount.contains(Integer.toString(amount)), "FAILED || Amount Mismatch");
+            logger.info("Invest Amount "+ actualAmount.split(" ")[1] + " is correct");
+            ExtentFactory.getTest().log(Status.PASS, "Invest Amount "+ actualAmount.split(" ")[1] + " is correct");
             Assert.assertEquals(actualCurrency.toLowerCase(), cryptoCurrency.toLowerCase(), "FAILED || Crypto Currency Mismatch");
+            logger.info("Crypto Currency "+ actualCurrency + " is correct");
+            ExtentFactory.getTest().log(Status.PASS, "Crypto Currency "+ actualCurrency + " is correct");
         }
     }
 }

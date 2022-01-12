@@ -23,7 +23,6 @@ public class BaseTest {
     public WebDriver driver;
 
     static Logger logger = Logger.getLogger(BaseTest.class);
-    protected InterviewTaskPage interviewTaskPage;
     public ExtentTest test;
     String path = System.getProperty("user.dir");
 
@@ -48,16 +47,7 @@ public class BaseTest {
 
         if(prop.getProperty("BrowserName").equalsIgnoreCase("Chrome")){
             System.setProperty("webdriver.chrome.driver", USER_DIR +"\\driver\\chromedriver.exe");
-
-            ChromeOptions options = new ChromeOptions();
-            options.addArguments("--disable-extensions");
-            options.addArguments("--profile-directory=Default");
-            options.addArguments("--incognito");
-            options.addArguments("--disable-plugins-discovery");
-            options.addArguments("-user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36");
-            options.addArguments();
-
-            driver = new ChromeDriver(options);
+            driver = new ChromeDriver();
         }
         else{
             logger.error("Unsupported Browser");

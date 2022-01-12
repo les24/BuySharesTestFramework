@@ -1,1 +1,0 @@
-{"uuid":"066f6659-a6a3-4e1f-933b-530c74db03f9","name":"Automation Test Suite","children":["b507fd53-19ef-4eb0-a416-6b5469b3bbca"],"befores":[{"name":"Setting up Suite","status":"passed","stage":"finished","description":"Setting up Suite","steps":[],"attachments":[],"parameters":[],"start":1641836569134,"stop":1641836569141}],"afters":[],"start":1641836569112,"stop":1641836585505}

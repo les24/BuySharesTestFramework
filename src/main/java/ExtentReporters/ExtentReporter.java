@@ -3,7 +3,7 @@ package ExtentReporters;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
-import utils.TabUtilities;
+import utils.Common;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -16,7 +16,7 @@ public class ExtentReporter {
         if (extent == null) {
             extent = new ExtentReports();
             ExtentSparkReporter spark = new ExtentSparkReporter(System.getProperty("user.dir") +
-                    "\\reports\\ExtentSparkReport" + TabUtilities.getCurrentTimeStamp() + ".html");
+                    "\\reports\\ExtentSparkReport" + Common.getCurrentTimeStamp() + ".html");
             spark.config().setTheme(Theme.STANDARD);
             spark.config().setDocumentTitle("Extent Report");
             spark.config().setEncoding("utf-8");
