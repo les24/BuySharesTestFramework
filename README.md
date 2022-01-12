@@ -1,4 +1,4 @@
-# ShareBuyTestFramework
+# BuySharesTestFramework
 A maven selenium test framework written in java to test features of buyshares.co.uk website using Extent Reports for test results.
 
 ## Prerequisites
